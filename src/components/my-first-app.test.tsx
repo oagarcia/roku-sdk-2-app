@@ -3,6 +3,7 @@
 
 /// <reference types="jest" />
 
+import { createSignal } from "@roku-sdk/solid";
 import { render, TestAnchorNode } from "@roku-sdk/testing-library";
 
 import MyFirstApp, { QUOTE_ERROR_TEXT, QUOTE_URL } from "./my-first-app";
@@ -22,6 +23,28 @@ const flushPromises = () => new Promise(resolve => setTimeout(resolve, 0));
 
 const originalFetch = (globalThis as unknown as { fetch?: unknown }).fetch;
 
+type KeyEvent = { key: string; press: boolean };
+
+/** Renders the app with a keyEvent signal so tests can press remote keys. */
+const renderApp = async () => {
+    const [keyEvent, setKeyEvent] = createSignal<KeyEvent>({ key: "", press: false });
+    const exitApp = jest.fn();
+    const view = await render(() => (
+        <TestMyFirstApp keyEvent={keyEvent()} focusActive={true} handledKeys={() => undefined} exitApp={exitApp} />
+    ));
+    await flushPromises();
+    await view.transaction();
+
+    const press = async (key: string) => {
+        setKeyEvent({ key, press: true });
+        await view.transaction();
+        setKeyEvent({ key, press: false });
+        await view.transaction();
+    };
+
+    return { ...view, press, exitApp };
+};
+
 describe("MyFirstApp Component", () => {
     beforeEach(() => {
         mockFetch(true, JSON.stringify({ data: { content: "Test quote", author: "Tester" } }));
@@ -32,39 +55,32 @@ describe("MyFirstApp Component", () => {
     });
 
     test("renders and matches snapshot", async () => {
-        const { toString, getByProp, transaction, dispose } = await render(() => <TestMyFirstApp />);
-        await flushPromises();
-        await transaction();
+        const { toString, getByProp, dispose } = await renderApp();
 
         expect(toString(2)).toMatchSnapshot();
-
-        // Verify the title and subtitle labels are rendered
         getByProp("text", "My First App");
         getByProp("text", "Roku RSG");
 
         dispose();
     });
 
-    test("renders with correct text content", async () => {
-        const { getByProp, dispose } = await render(() => <TestMyFirstApp />);
+    test("renders the labels and both buttons", async () => {
+        const { getByProp, dispose } = await renderApp();
 
-        // Verify the title and subtitle labels exist with correct text
-        getByProp("text", "My First App");
-        getByProp("text", "Roku RSG");
-
-        // Verify labels have the expected IDs
         getByProp("id", "titleLabel");
         getByProp("id", "subtitleLabel");
         getByProp("id", "quoteLabel");
+        getByProp("id", "exitButton");
+        getByProp("id", "helloButton");
+        getByProp("text", "Exit");
+        getByProp("text", "Hello World");
 
         dispose();
     });
 
     test("loads a quote from the API and shows it", async () => {
         const fetchMock = mockFetch(true, JSON.stringify({ data: { content: "Test quote", author: "Tester" } }));
-        const { getByProp, transaction, dispose } = await render(() => <TestMyFirstApp />);
-        await flushPromises();
-        await transaction();
+        const { getByProp, dispose } = await renderApp();
 
         expect(fetchMock).toHaveBeenCalledWith(QUOTE_URL, expect.anything());
         getByProp("text", '"Test quote" — Tester');
@@ -74,9 +90,7 @@ describe("MyFirstApp Component", () => {
 
     test("shows an error message when the API responds with an error", async () => {
         mockFetch(false, "");
-        const { getByProp, transaction, dispose } = await render(() => <TestMyFirstApp />);
-        await flushPromises();
-        await transaction();
+        const { getByProp, dispose } = await renderApp();
 
         getByProp("text", QUOTE_ERROR_TEXT);
 
@@ -85,11 +99,39 @@ describe("MyFirstApp Component", () => {
 
     test("shows an error message when the body is not valid JSON", async () => {
         mockFetch(true, "<html>not json</html>");
-        const { getByProp, transaction, dispose } = await render(() => <TestMyFirstApp />);
-        await flushPromises();
-        await transaction();
+        const { getByProp, dispose } = await renderApp();
 
         getByProp("text", QUOTE_ERROR_TEXT);
+
+        dispose();
+    });
+
+    test("OK on the Exit button (focused first) requests app exit", async () => {
+        const { press, exitApp, dispose } = await renderApp();
+
+        await press("OK");
+
+        expect(exitApp).toHaveBeenCalledWith(true);
+
+        dispose();
+    });
+
+    test("the Hello World button opens the hello screen and Back returns home", async () => {
+        const { press, queryByProp, getByProp, exitApp, dispose } = await renderApp();
+
+        expect(queryByProp("id", "helloWorldLabel")).toBeNull();
+
+        await press("right");
+        await press("OK");
+        getByProp("id", "helloWorldLabel");
+        getByProp("text", "Hello World");
+
+        // OK on the hello screen must not reach the home buttons underneath.
+        await press("OK");
+        expect(exitApp).not.toHaveBeenCalled();
+
+        await press("back");
+        expect(queryByProp("id", "helloWorldLabel")).toBeNull();
 
         dispose();
     });

@@ -15,6 +15,7 @@
     "dependencies": {
         "@roku-sdk/components": "^2.20.0",
         "@roku-sdk/interfaces": "^2.20.0",
+        "@roku-sdk/navigation": "^2.20.0",
         "@roku-sdk/rsg-ts": "^2.20.0",
         "@roku-sdk/solid": "^2.20.0",
         "@roku-sdk/testing-library": "^2.20.0",

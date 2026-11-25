@@ -16,7 +16,16 @@ sub init()
     if myFirstApp <> invalid
         print "MyFirstApp component found and initialized"
         myFirstApp.setFocus(true) ' Set initial focus to the MyFirstApp component
+        myFirstApp.observeField("exitApp", "onExitAppRequested")
     else
         print "ERROR: MyFirstApp component (id myFirstApp) not found; initial focus not set"
+    end if
+end sub
+
+' The Exit button sets MyFirstApp.exitApp; forward it to m.global.exitApp, which Main.brs observes.
+sub onExitAppRequested(event as object)
+    if event.getData() = true
+        print "Exit requested by MyFirstApp"
+        m.global.exitApp = true
     end if
 end sub

@@ -14,6 +14,9 @@ importers:
       '@roku-sdk/interfaces':
         specifier: ^2.20.0
         version: 2.20.0
+      '@roku-sdk/navigation':
+        specifier: ^2.20.0
+        version: 2.20.0
       '@roku-sdk/rsg-ts':
         specifier: ^2.20.0
         version: 2.20.0
