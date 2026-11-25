@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`MyFirstApp Component renders and matches snapshot 1`] = `
+"{
+  "tag": "anchor",
+  "props": {},
+  "children": [
+    {
+      "tag": "layoutGroup",
+      "props": {
+        "translation": [
+          960,
+          540
+        ],
+        "layoutDirection": "vert",
+        "vertAlignment": "center",
+        "horizAlignment": "center"
+      },
+      "children": [
+        {
+          "tag": "label",
+          "props": {
+            "id": "titleLabel",
+            "color": "0xFFFFFFFF",
+            "font": "font:ExtraLargeSystemFont",
+            "text": "My First App",
+            "horizAlign": "center",
+            "vertAlign": "center",
+            "width": 1920,
+            "height": 100
+          },
+          "children": []
+        },
+        {
+          "tag": "label",
+          "props": {
+            "id": "subtitleLabel",
+            "color": "0xFFFFFFFF",
+            "font": "font:LargeSystemFont",
+            "text": "Roku RSG",
+            "horizAlign": "center",
+            "vertAlign": "center",
+            "width": 1920,
+            "height": 80
+          },
+          "children": []
+        },
+        {
+          "tag": "scrollingLabel",
+          "props": {
+            "id": "quoteLabel",
+            "color": "0xCCCCCCFF",
+            "font": "font:MediumSystemFont",
+            "horizAlign": "center",
+            "vertAlign": "center",
+            "maxWidth": 400,
+            "height": 60,
+            "text": "\\"Test quote\\" — Tester"
+          },
+          "children": []
+        }
+      ]
+    }
+  ]
+}"
+`;

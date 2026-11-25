@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "roku-sdk-tools": {
+      "type": "stdio",
+      "command": "pnpm",
+      "args": [
+        "exec",
+        "rk",
+        "mcp"
+      ],
+      "env": {}
+    }
+  }
+}

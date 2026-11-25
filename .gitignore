@@ -1,0 +1,48 @@
+# Local AI-context breadcrumb and per-machine device state (rk update-ai-context, active device)
+.roku/
+
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output (rk dev / rk build / packaging)
+dist-dev/
+dist-build/
+*.pkg
+*.zip
+
+# Tests and coverage
+coverage/
+test-results/
+junit.xml
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Caches
+.eslintcache
+*.tsbuildinfo
+
+# Environment and secrets (signing keys, device passwords)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Claude Code personal settings (shared project settings stay versioned)
+.claude/settings.local.json
+
+# Editors
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+.idea/
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
