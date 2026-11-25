@@ -125,10 +125,44 @@ describe("MyFirstApp Component", () => {
         await press("OK");
         getByProp("id", "helloWorldLabel");
         getByProp("text", "Hello World");
+        getByProp("id", "catalogButton");
 
-        // OK on the hello screen must not reach the home buttons underneath.
-        await press("OK");
+        await press("back");
+        expect(queryByProp("id", "helloWorldLabel")).toBeNull();
         expect(exitApp).not.toHaveBeenCalled();
+
+        dispose();
+    });
+
+    test("the catalog button opens the EPG, which navigates and pops back", async () => {
+        const { press, queryByProp, getByProp, exitApp, dispose } = await renderApp();
+        // The details panel shows the focused program's title.
+        const selectedTitle = () =>
+            (getByProp("id", "programTitle") as unknown as { props: { text?: string } }).props.text;
+
+        await press("right");
+        await press("OK"); // Hello World
+        await press("OK"); // Ver catálogo — must not reach the home buttons underneath
+        expect(exitApp).not.toHaveBeenCalled();
+
+        getByProp("id", "catalogScreen");
+        for (const name of ["Noticias 24", "Deportes+", "Cine Clásico", "Kids TV", "Música HD"]) {
+            getByProp("text", name);
+        }
+
+        // Starts on what is airing now (21:10) on the first channel.
+        expect(selectedTitle()).toBe("Mundo Hoy");
+
+        await press("right");
+        expect(selectedTitle()).toBe("Debate Abierto");
+
+        // Down keeps the time: 21:30-22:30 on Deportes+ is the live match.
+        await press("down");
+        expect(selectedTitle()).toBe("Fútbol en Vivo: Clásico");
+
+        await press("back");
+        expect(queryByProp("id", "catalogScreen")).toBeNull();
+        getByProp("id", "helloWorldLabel");
 
         await press("back");
         expect(queryByProp("id", "helloWorldLabel")).toBeNull();
