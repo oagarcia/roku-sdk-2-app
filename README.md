@@ -1,6 +1,6 @@
-# My First App
+# Roku RSG 2.0 SDK Playground
 
-A Roku app built with the RSG SDK (TypeScript + SolidJS). It started as the minimal `npx rk create` scaffold and now has three screens with remote-control navigation, a quote loaded from an API, and a simulated program guide (EPG).
+A Roku app built with the RSG SDK (TypeScript + SolidJS). It started as the minimal `npx rk create` scaffold and with additional screens with remote-control navigation, a quote loaded from an API, and a simulated program guide (EPG).
 
 ## Screens
 
@@ -9,7 +9,7 @@ A Roku app built with the RSG SDK (TypeScript + SolidJS). It started as the mini
 | ![Home](screenshots/home.png) | ![Hello World](screenshots/hello-world.png) | ![Catalog](screenshots/catalog-epg.png) |
 
 ### Home
-- "My First App" title and "Roku RSG" subtitle.
+- "Title and Subtitle.
 - **Random quote** loaded on launch from
   `https://prod-main-api-704464-00tre1p1erm.compute.instacloud-edge.com/api/v1/public/quotes/quote/random`,
   shown as `"quote" — author` in a centered 400 px `ScrollingLabel` that scrolls when the text doesn't fit.
